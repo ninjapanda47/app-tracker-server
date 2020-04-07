@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 const Applications = mongoose.model('Applications');
 
-module.exports = app => {
+module.exports = (app) => {
+  app.get('/', (req, res) => {
+    const welcome = `<html><body>This is the backend server for App Tracker</body></html>`;
+    res.send(welcome);
+  });
   // get applications by userId
   app.get('/getByUser/:userId', async (req, res) => {
     const userId = req.params.userId;
@@ -24,10 +28,10 @@ module.exports = app => {
   app.post('/updateJob', async (req, res) => {
     const updateItem = await Applications.findByIdAndUpdate(
       {
-        _id: req.body.id
+        _id: req.body.id,
       },
       {
-        $set: req.body.update
+        $set: req.body.update,
       },
       { new: true },
       (err, doc) => {
@@ -43,11 +47,10 @@ module.exports = app => {
   });
 
   // Delete application
-  app.put('/deleteJob/:jobId', async (req, res) => {
-    console.log(req.body.params);
+  app.put('/deleteJob', async (req, res) => {
     const deleteItem = await Applications.findByIdAndRemove(
       {
-        _id: req.body.params.jobId
+        _id: req.body.id,
       },
       (err, doc) => {
         if (err) {
