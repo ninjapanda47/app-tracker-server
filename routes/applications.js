@@ -17,6 +17,26 @@ module.exports = (app) => {
     }
   });
 
+  // get stats by userId
+  app.get('/getStatsByUser/:userId', async (req, res) => {
+    const userId = req.params.userId;
+    const submitted = await Applications.countDocuments({ userId: userId });
+    const interviewed = await Applications.countDocuments({
+      userId: userId,
+      status: 'Interview in progress',
+    });
+    const rejected = await Applications.countDocuments({
+      userId: userId,
+      status: 'Rejected',
+    });
+    const result = { submitted, interviewed, rejected };
+    if (result) {
+      res.status(200).json(result);
+    } else {
+      res.status(200).json('No results');
+    }
+  });
+
   // Add new application
   app.post('/addJob', async (req, res) => {
     const job = new Applications(req.body);
